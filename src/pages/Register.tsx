@@ -87,7 +87,14 @@ const Register = () => {
     });
   };
 
-  const handleSelectChange = (value: string) => {
+  const handleSelectAreaChange = (value: string) => {
+    setFormData({
+      ...formData,
+      areaAtuacao: value
+    });
+  };
+
+  const handleSelectParceriaChange = (value: string) => {
     setFormData({
       ...formData,
       parceriasDesejadas: value
@@ -152,14 +159,18 @@ const Register = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="areaAtuacao">Área de Atuação *</Label>
-                    <Input 
-                      id="areaAtuacao"
-                      name="areaAtuacao"
-                      value={formData.areaAtuacao}
-                      onChange={handleChange}
-                      required
-                      placeholder="Ex: Tecnologia, Varejo, Serviços"
-                    />
+                    <Select value={formData.areaAtuacao} onValueChange={handleSelectAreaChange} required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione a área de atuação" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {setoresEconomicos.map((setor) => (
+                          <SelectItem key={setor} value={setor}>
+                            {setor}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label htmlFor="tipoEstabelecimento">Tipo de Estabelecimento *</Label>
@@ -200,7 +211,7 @@ const Register = () => {
 
                 <div>
                   <Label htmlFor="parceriasDesejadas">Setor de Parceria Desejada *</Label>
-                  <Select value={formData.parceriasDesejadas} onValueChange={handleSelectChange} required>
+                  <Select value={formData.parceriasDesejadas} onValueChange={handleSelectParceriaChange} required>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o setor de interesse para parcerias" />
                     </SelectTrigger>

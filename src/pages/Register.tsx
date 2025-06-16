@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useNavigate } from "react-router-dom";
 import { Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +22,39 @@ const Register = () => {
     descricao: "",
     parceriasDesejadas: ""
   });
+
+  const setoresEconomicos = [
+    "Agronegócio",
+    "Alimentação e Bebidas",
+    "Automotivo",
+    "Aviação",
+    "Banco e Finanças",
+    "Biotecnologia",
+    "Comunicação e Marketing",
+    "Construção Civil",
+    "Consultoria",
+    "Cosmética e Beleza",
+    "E-commerce",
+    "Educação",
+    "Energia",
+    "Entretenimento",
+    "Farmacêutico",
+    "Imobiliário",
+    "Indústria Química",
+    "Logística e Transporte",
+    "Moda e Têxtil",
+    "Petróleo e Gás",
+    "Saúde",
+    "Segurança",
+    "Serviços Financeiros",
+    "Tecnologia da Informação",
+    "Telecomunicações",
+    "Turismo e Hotelaria",
+    "Varejo",
+    "Mecânica Automotiva",
+    "Agência de Viagens",
+    "Serviços Jurídicos"
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +84,13 @@ const Register = () => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSelectChange = (value: string) => {
+    setFormData({
+      ...formData,
+      parceriasDesejadas: value
     });
   };
 
@@ -158,16 +199,19 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="parceriasDesejadas">Parcerias Desejadas *</Label>
-                  <Textarea 
-                    id="parceriasDesejadas"
-                    name="parceriasDesejadas"
-                    value={formData.parceriasDesejadas}
-                    onChange={handleChange}
-                    required
-                    placeholder="Descreva que tipo de parcerias você busca: fornecedores, distribuidores, joint ventures, etc."
-                    rows={3}
-                  />
+                  <Label htmlFor="parceriasDesejadas">Setor de Parceria Desejada *</Label>
+                  <Select value={formData.parceriasDesejadas} onValueChange={handleSelectChange} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o setor de interesse para parcerias" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {setoresEconomicos.map((setor) => (
+                        <SelectItem key={setor} value={setor}>
+                          {setor}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <Button type="submit" className="w-full" size="lg">

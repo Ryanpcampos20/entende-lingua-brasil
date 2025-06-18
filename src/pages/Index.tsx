@@ -13,7 +13,7 @@ const Index = () => {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-3">
               <img 
-                src="/lovable-uploads/e8102e8e-a33f-4a70-84ed-a1efec461924.png" 
+                src="/lovable-uploads/bad5c8be-c34c-4862-b6b3-b7ad10c24b65.png" 
                 alt="Connected Partners & Business Logo" 
                 className="h-12 w-12 object-contain"
               />
@@ -201,7 +201,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-3">
             <img 
-              src="/lovable-uploads/e8102e8e-a33f-4a70-84ed-a1efec461924.png" 
+              src="/lovable-uploads/bad5c8be-c34c-4862-b6b3-b7ad10c24b65.png" 
               alt="Connected Partners & Business Logo" 
               className="h-8 w-8 object-contain filter brightness-0 invert"
             />

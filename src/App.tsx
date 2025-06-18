@@ -10,9 +10,9 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Partners from "./pages/Partners";
 import MatchingPage from "./pages/partners/MatchingPage";
-import ProductsPage from "./pages/business/ProductsPage";
+import { ProductsPage } from "./pages/business/ProductsPage";
 import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

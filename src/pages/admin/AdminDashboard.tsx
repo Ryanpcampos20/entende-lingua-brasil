@@ -1,234 +1,151 @@
-
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Link, useNavigate } from "react-router-dom";
-import { Users, Settings, LogOut, Building, MessageCircle, TrendingUp, AlertCircle } from "lucide-react";
+import React from 'react';
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate, Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CalendarDays, Building2, Users, UserPlus, ArrowRight } from 'lucide-react';
 
-interface Empresa {
-  id: number;
-  nomeEmpresa: string;
-  cnpj: string;
-  areaAtuacao: string;
-  tipoEstabelecimento: string;
-  regiao: string;
-  parceriasDesejadas: string;
-  dataCadastro: string;
-}
-
-const AdminDashboard = () => {
-  const { isAdmin, logout } = useAuth();
+export const AdminDashboard = () => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
-  const [empresas, setEmpresas] = useState<Empresa[]>([]);
 
-  useEffect(() => {
-    if (!isAdmin) {
-      navigate("/admin/login");
-      return;
+  // Simulando dados de empresas
+  const empresas = JSON.parse(localStorage.getItem("empresas") || "[]");
+  
+  const estatisticas = {
+    totalEmpresas: empresas.length,
+    novasEmpresasHoje: empresas.filter((empresa: any) => {
+      const diasDesdecadastro = Math.floor((Date.now() - new Date(empresa.dataCadastro).getTime()) / (1000 * 60 * 60 * 24));
+      return diasDesdecadastro === 0;
+    }).length,
+    areaMaisComum: () => {
+      const areas = empresas.map((empresa: any) => empresa.areaAtuacao);
+      const contagemAreas: { [key: string]: number } = {};
+      areas.forEach(area => {
+        contagemAreas[area] = (contagemAreas[area] || 0) + 1;
+      });
+      let areaMaisComum = "";
+      let maxContagem = 0;
+      for (const area in contagemAreas) {
+        if (contagemAreas[area] > maxContagem) {
+          areaMaisComum = area;
+          maxContagem = contagemAreas[area];
+        }
+      }
+      return areaMaisComum;
+    },
+    mediaParceriasDesejadas: () => {
+      if (empresas.length === 0) return 0;
+      const totalParcerias = empresas.reduce((total: number, empresa: any) => total + empresa.parceriasDesejadas.length, 0);
+      return totalParcerias / empresas.length;
     }
-
-    // Carregar empresas do localStorage
-    const empresasData = localStorage.getItem("empresas");
-    if (empresasData) {
-      setEmpresas(JSON.parse(empresasData));
-    }
-  }, [isAdmin, navigate]);
+  };
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate('/admin/login');
   };
-
-  const getStatusColor = (empresa: Empresa) => {
-    // Lógica simples para status baseado na data de cadastro
-    const cadastro = new Date(empresa.dataCadastro);
-    const agora = new Date();
-    const diasDesdecadastro = Math.floor((agora.getTime() - cadastro.getTime()) / (1000 * 60 * 60 * 24));
-    
-    if (diasDesdecastro < 7) return "bg-green-100 text-green-800";
-    if (diasDesdecastro < 30) return "bg-blue-100 text-blue-800";
-    return "bg-gray-100 text-gray-800";
-  };
-
-  const getStatusText = (empresa: Empresa) => {
-    const cadastro = new Date(empresa.dataCadastro);
-    const agora = new Date();
-    const diasDesdecastro = Math.floor((agora.getTime() - cadastro.getTime()) / (1000 * 60 * 60 * 24));
-    
-    if (diasDesdecastro < 7) return "Novo";
-    if (diasDesdecastro < 30) return "Ativo";
-    return "Estabelecido";
-  };
-
-  if (!isAdmin) {
-    return null;
-  }
 
   return (
-    <div className="min-h-screen gradient-bg">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <Link to="/" className="flex items-center space-x-3">
-              <img 
-                src="/lovable-uploads/e8102e8e-a33f-4a70-84ed-a1efec461924.png" 
-                alt="Connected Partners & Business Logo" 
-                className="h-10 w-10 object-contain"
-              />
-              <h1 className="text-xl font-bold text-gray-900">
-                Admin - Connected Partners & Business
-              </h1>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Administrador</span>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sair
-              </Button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Admin Dashboard
+          </h1>
+          <Button variant="destructive" onClick={handleLogout}>Logout</Button>
         </div>
       </header>
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {/* Estatísticas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-gray-500" />
+                Total de Empresas
+              </CardTitle>
+              <CardDescription>Número total de empresas cadastradas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{estatisticas.totalEmpresas}</div>
+            </CardContent>
+          </Card>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Painel Administrativo
-          </h2>
-          <p className="text-gray-600">
-            Gerencie todas as empresas, conexões e intermediações da plataforma
-          </p>
-        </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <UserPlus className="h-5 w-5 text-gray-500" />
+                Novas Empresas Hoje
+              </CardTitle>
+              <CardDescription>Empresas que se cadastraram nas últimas 24 horas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{estatisticas.novasEmpresasHoje}</div>
+            </CardContent>
+          </Card>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="gradient-card">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Building className="h-8 w-8 text-primary" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Empresas Cadastradas</p>
-                  <p className="text-2xl font-bold text-primary">{empresas.length}</p>
-                </div>
-              </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CalendarDays className="h-5 w-5 text-gray-500" />
+                Área de Atuação Mais Comum
+              </CardTitle>
+              <CardDescription>Setor com maior número de empresas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl font-semibold">{estatisticas.areaMaisComum()}</div>
             </CardContent>
           </Card>
-          
-          <Card className="gradient-card">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Users className="h-8 w-8 text-accent" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Matches Ativos</p>
-                  <p className="text-2xl font-bold text-accent">24</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="gradient-card">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <MessageCircle className="h-8 w-8 text-secondary" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Intermediações</p>
-                  <p className="text-2xl font-bold text-secondary">7</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="gradient-card">
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Negócios Ativos</p>
-                  <p className="text-2xl font-bold text-green-600">15</p>
-                </div>
-              </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-gray-500" />
+                Média de Parcerias Desejadas
+              </CardTitle>
+              <CardDescription>Média de parcerias que as empresas buscam</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{estatisticas.mediaParceriasDesejadas().toFixed(1)}</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Pending Intermediations Alert */}
-        <Card className="mb-8 border-yellow-200 bg-yellow-50">
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <AlertCircle className="h-8 w-8 text-yellow-600" />
-              <div className="ml-4">
-                <h3 className="text-lg font-semibold text-yellow-800">
-                  Solicitações de Intermediação Pendentes
-                </h3>
-                <p className="text-yellow-700">
-                  Você tem 3 solicitações de intermediação aguardando sua análise
-                </p>
-                <Button className="mt-2" variant="outline" size="sm">
-                  Ver Solicitações
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Companies List */}
-        <Card className="gradient-card">
-          <CardHeader>
-            <CardTitle className="text-primary">Empresas Cadastradas</CardTitle>
-            <CardDescription>
-              Todas as empresas registradas na plataforma
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {empresas.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">
-                  Nenhuma empresa cadastrada ainda
-                </p>
-              ) : (
-                empresas.map((empresa) => (
-                  <div key={empresa.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-white/60">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="font-semibold text-gray-900">{empresa.nomeEmpresa}</h3>
-                        <Badge className={getStatusColor(empresa)}>
-                          {getStatusText(empresa)}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-gray-600">CNPJ: {empresa.cnpj}</p>
-                      <div className="flex space-x-4 mt-2">
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                          {empresa.areaAtuacao}
-                        </span>
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                          Interesse: {empresa.parceriasDesejadas}
-                        </span>
-                        <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
-                          {empresa.regiao}
-                        </span>
+        {/* Lista de Empresas Cadastradas */}
+        <div className="bg-white shadow overflow-hidden rounded-md">
+          <ul className="divide-y divide-gray-200">
+            {empresas.map((empresa: any) => (
+              <li key={empresa.id}>
+                <Link to={`/business/products?empresaId=${empresa.id}`} className="block hover:bg-gray-50">
+                  <div className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-indigo-600 truncate">{empresa.nomeEmpresa}</p>
+                      <div className="ml-2 flex-shrink-0">
+                        <ArrowRight className="h-5 w-5 text-gray-400" />
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        Ver Detalhes
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Gerenciar
-                      </Button>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                      <div className="sm:flex">
+                        <p className="flex items-center text-sm text-gray-500">
+                          <Building2 className="mr-1.5 h-5 w-5 text-gray-400 flex-shrink-0" />
+                          {empresa.areaAtuacao}
+                        </p>
+                      </div>
+                      <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                        <CalendarDays className="mr-1.5 h-5 w-5 text-gray-400 flex-shrink-0" />
+                        <p>
+                          Cadastrado em {new Date(empresa.dataCadastro).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </main>
     </div>
   );
 };
-
-export default AdminDashboard;

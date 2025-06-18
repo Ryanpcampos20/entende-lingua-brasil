@@ -2,27 +2,35 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Users, Briefcase, ChartBar } from "lucide-react";
+import { Briefcase, ChartBar, Users, Handshake, MessageCircle, ShoppingBag } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen gradient-bg">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-2">
-              <Users className="h-8 w-8 text-blue-600" />
+            <div className="flex items-center space-x-3">
+              <img 
+                src="/lovable-uploads/e8102e8e-a33f-4a70-84ed-a1efec461924.png" 
+                alt="Connected Partners & Business Logo" 
+                className="h-12 w-12 object-contain"
+              />
               <h1 className="text-2xl font-bold text-gray-900">
                 Connected Partners & Business
               </h1>
             </div>
             <nav className="flex space-x-4">
               <Link to="/register">
-                <Button variant="outline">Cadastrar Empresa</Button>
+                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                  Cadastrar Empresa
+                </Button>
               </Link>
               <Link to="/dashboard">
-                <Button>Acessar Dashboard</Button>
+                <Button className="gradient-primary text-white">
+                  Acessar Dashboard
+                </Button>
               </Link>
             </nav>
           </div>
@@ -34,20 +42,20 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-5xl font-extrabold text-gray-900 mb-6">
             Conecte sua empresa às melhores
-            <span className="text-blue-600"> parcerias empresariais</span>
+            <span className="text-primary"> parcerias empresariais</span>
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             A plataforma que conecta empresas brasileiras para formar parcerias estratégicas, 
-            expandir negócios e criar oportunidades de crescimento mútuo.
+            expandir negócios e criar oportunidades de crescimento mútuo através de matchmaking inteligente.
           </p>
           <div className="flex justify-center space-x-4">
             <Link to="/register">
-              <Button size="lg" className="px-8 py-3">
+              <Button size="lg" className="px-8 py-3 gradient-primary text-white">
                 Cadastrar Minha Empresa
               </Button>
             </Link>
             <Link to="/partners">
-              <Button variant="outline" size="lg" className="px-8 py-3">
+              <Button variant="outline" size="lg" className="px-8 py-3 border-primary text-primary hover:bg-primary hover:text-white">
                 Encontrar Parceiros
               </Button>
             </Link>
@@ -56,38 +64,68 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white/60 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Como Funciona
+            Plataforma Completa para Parcerias e Negócios
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="text-center gradient-card border-blue-100 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Briefcase className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <CardTitle>Cadastre sua Empresa</CardTitle>
+                <Handshake className="h-12 w-12 text-primary mx-auto mb-4" />
+                <CardTitle className="text-primary">Matchmaking Inteligente</CardTitle>
                 <CardDescription>
-                  Registre informações básicas como CNPJ, área de atuação e tipo de estabelecimento
+                  Algoritmo avançado conecta empresas com base em complementaridade de setores e interesses mútuos
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center gradient-card border-blue-100 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <CardTitle>Encontre Parceiros</CardTitle>
+                <MessageCircle className="h-12 w-12 text-accent mx-auto mb-4" />
+                <CardTitle className="text-primary">Chat Privado</CardTitle>
                 <CardDescription>
-                  Nossa plataforma conecta sua empresa com parceiros ideais na sua região de interesse
+                  Comunicação direta entre empresas com possibilidade de solicitar intermediação de consultores especializados
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center gradient-card border-blue-100 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <ChartBar className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                <CardTitle>Acompanhe Resultados</CardTitle>
+                <ShoppingBag className="h-12 w-12 text-secondary mx-auto mb-4" />
+                <CardTitle className="text-primary">Módulo de Negócios</CardTitle>
                 <CardDescription>
-                  Dashboard completo com dados da empresa, interações e oportunidades de parceria
+                  Vitrine de produtos/serviços e sistema de cotações para demandas específicas com verba alocada
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center gradient-card border-blue-100 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Briefcase className="h-12 w-12 text-primary mx-auto mb-4" />
+                <CardTitle className="text-primary">Cadastro Segmentado</CardTitle>
+                <CardDescription>
+                  Registre informações detalhadas como CNPJ, área de atuação e setores de interesse para parcerias
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center gradient-card border-blue-100 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Users className="h-12 w-12 text-accent mx-auto mb-4" />
+                <CardTitle className="text-primary">Gestão Administrativa</CardTitle>
+                <CardDescription>
+                  Dashboard completo para administradores gerenciarem contas, conexões e intermediações
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center gradient-card border-blue-100 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <ChartBar className="h-12 w-12 text-secondary mx-auto mb-4" />
+                <CardTitle className="text-primary">Relatórios e Analytics</CardTitle>
+                <CardDescription>
+                  Acompanhe resultados, interações e oportunidades de parceria através de relatórios detalhados
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -95,17 +133,63 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Modules Section */}
+      <section className="py-16 bg-primary/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Dois Módulos Especializados
+          </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="gradient-card border-primary/20 hover:shadow-xl transition-shadow">
+              <CardHeader className="text-center">
+                <Handshake className="h-16 w-16 text-primary mx-auto mb-4" />
+                <CardTitle className="text-2xl text-primary">Módulo Parceiros</CardTitle>
+                <CardDescription className="text-lg">
+                  Foco em networking e formação de parcerias estratégicas
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• Matchmaking baseado em setores complementares</li>
+                  <li>• Chat privado entre empresas</li>
+                  <li>• Solicitação de intermediação de consultores</li>
+                  <li>• Sistema de scoring de compatibilidade</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="gradient-card border-secondary/20 hover:shadow-xl transition-shadow">
+              <CardHeader className="text-center">
+                <ShoppingBag className="h-16 w-16 text-secondary mx-auto mb-4" />
+                <CardTitle className="text-2xl text-primary">Módulo Negócios</CardTitle>
+                <CardDescription className="text-lg">
+                  Transações comerciais diretas com verba alocada
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• Cadastro de produtos e serviços</li>
+                  <li>• Sistema de cotações segmentado</li>
+                  <li>• Vitrine de ofertas por categoria</li>
+                  <li>• Contato direto para negociações</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-16 bg-blue-600">
+      <section className="py-16 gradient-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-3xl font-bold text-white mb-4">
             Pronto para expandir seus negócios?
           </h3>
           <p className="text-xl text-blue-100 mb-8">
-            Junte-se a centenas de empresas que já encontraram seus parceiros ideais
+            Junte-se a centenas de empresas que já encontraram seus parceiros ideais através da nossa plataforma
           </p>
           <Link to="/register">
-            <Button size="lg" variant="secondary" className="px-8 py-3">
+            <Button size="lg" variant="secondary" className="px-8 py-3 bg-white text-primary hover:bg-gray-100">
               Começar Agora - É Grátis
             </Button>
           </Link>
@@ -115,12 +199,16 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center space-x-2">
-            <Users className="h-6 w-6" />
+          <div className="flex items-center justify-center space-x-3">
+            <img 
+              src="/lovable-uploads/e8102e8e-a33f-4a70-84ed-a1efec461924.png" 
+              alt="Connected Partners & Business Logo" 
+              className="h-8 w-8 object-contain filter brightness-0 invert"
+            />
             <span className="text-lg font-semibold">Connected Partners & Business</span>
           </div>
           <p className="text-center text-gray-400 mt-4">
-            Conectando empresas brasileiras para um futuro próspero
+            Conectando empresas brasileiras para um futuro próspero através de parcerias estratégicas
           </p>
         </div>
       </footer>

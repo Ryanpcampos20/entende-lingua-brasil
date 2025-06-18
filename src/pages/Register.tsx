@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Link, useNavigate } from "react-router-dom";
 import { Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     nomeEmpresa: "",
     cnpj: "",
@@ -68,7 +69,9 @@ const Register = () => {
     };
     empresas.push(novaEmpresa);
     localStorage.setItem("empresas", JSON.stringify(empresas));
-    localStorage.setItem("empresaAtual", JSON.stringify(novaEmpresa));
+    
+    // Login automático após cadastro
+    login(novaEmpresa);
 
     toast({
       title: "Empresa cadastrada com sucesso!",

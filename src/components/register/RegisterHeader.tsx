@@ -9,9 +9,9 @@ export const RegisterHeader = () => {
         <div className="flex justify-between items-center py-6">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/bad5c8be-c34c-4862-b6b3-b7ad10c24b65.png" 
+              src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
               alt="Connected Partners & Business Logo" 
-              className="h-8 w-8 object-contain"
+              className="h-12 w-12 object-contain drop-shadow-md"
             />
             <h1 className="text-2xl font-bold text-gray-900">
               Connected Partners & Business

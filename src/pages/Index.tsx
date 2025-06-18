@@ -13,9 +13,9 @@ const Index = () => {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-3">
               <img 
-                src="/lovable-uploads/bad5c8be-c34c-4862-b6b3-b7ad10c24b65.png" 
+                src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
                 alt="Connected Partners & Business Logo" 
-                className="h-12 w-12 object-contain"
+                className="h-16 w-16 object-contain drop-shadow-md"
               />
               <h1 className="text-2xl font-bold text-gray-900">
                 Connected Partners & Business
@@ -201,9 +201,9 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-3">
             <img 
-              src="/lovable-uploads/bad5c8be-c34c-4862-b6b3-b7ad10c24b65.png" 
+              src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
               alt="Connected Partners & Business Logo" 
-              className="h-8 w-8 object-contain filter brightness-0 invert"
+              className="h-12 w-12 object-contain filter brightness-110 contrast-125"
             />
             <span className="text-lg font-semibold">Connected Partners & Business</span>
           </div>

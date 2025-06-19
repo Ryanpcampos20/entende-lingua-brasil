@@ -22,6 +22,11 @@ const Index = () => {
               </h1>
             </div>
             <nav className="flex space-x-4">
+              <Link to="/login">
+                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                  Login
+                </Button>
+              </Link>
               <Link to="/register">
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
                   Cadastrar Empresa

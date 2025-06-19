@@ -5,11 +5,15 @@ interface User {
   id: string;
   nomeEmpresa: string;
   cnpj: string;
-  areaAtuacao: string;
+  nomeResponsavel: string;
+  email: string;
+  telefone: string;
+  areaAtuacao: string[];
   tipoEstabelecimento: string;
   regiao: string;
   descricao: string;
-  parceriasDesejadas: string;
+  parceriasDesejadas: string[];
+  senha: string;
   dataCadastro: string;
   isAdmin?: boolean;
 }
@@ -20,6 +24,7 @@ interface AuthContextType {
   login: (userData: User) => void;
   logout: () => void;
   loginAdmin: () => void;
+  loginWithCredentials: (email: string, senha: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,6 +52,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('empresaAtual', JSON.stringify(userData));
   };
 
+  const loginWithCredentials = (email: string, senha: string): boolean => {
+    const empresas = JSON.parse(localStorage.getItem("empresas") || "[]");
+    const empresa = empresas.find((emp: User) => emp.email === email && emp.senha === senha);
+    
+    if (empresa) {
+      login(empresa);
+      return true;
+    }
+    return false;
+  };
+
   const loginAdmin = () => {
     setIsAdmin(true);
     localStorage.setItem('isAdmin', 'true');
@@ -60,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, login, logout, loginAdmin }}>
+    <AuthContext.Provider value={{ user, isAdmin, login, logout, loginAdmin, loginWithCredentials }}>
       {children}
     </AuthContext.Provider>
   );

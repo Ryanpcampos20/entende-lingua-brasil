@@ -73,6 +73,9 @@ const Partners = () => {
               </h1>
             </Link>
             <nav className="flex space-x-4">
+              <Link to="/login">
+                <Button variant="outline">Login</Button>
+              </Link>
               <Link to="/dashboard">
                 <Button variant="outline">Dashboard</Button>
               </Link>
@@ -167,7 +170,9 @@ const Partners = () => {
                       {empresa.nomeEmpresa}
                     </CardTitle>
                     <CardDescription>
-                      {empresa.areaAtuacao} • {empresa.regiao}
+                      {Array.isArray(empresa.areaAtuacao) 
+                        ? empresa.areaAtuacao.join(", ") 
+                        : empresa.areaAtuacao} • {empresa.regiao}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -189,13 +194,20 @@ const Partners = () => {
                       <div>
                         <h4 className="font-semibold text-sm text-gray-600">Busca por</h4>
                         <p className="text-sm text-gray-700 line-clamp-2">
-                          {empresa.parceriasDesejadas}
+                          {Array.isArray(empresa.parceriasDesejadas) 
+                            ? empresa.parceriasDesejadas.join(", ") 
+                            : empresa.parceriasDesejadas}
                         </p>
                       </div>
 
-                      <div className="pt-4 border-t">
+                      <div className="pt-4 border-t space-y-2">
+                        <Link to={`/chat?with=${empresa.id}`}>
+                          <Button className="w-full" variant="default">
+                            Iniciar Chat
+                          </Button>
+                        </Link>
                         <Button className="w-full" variant="outline">
-                          Entrar em Contato
+                          Ver Detalhes
                         </Button>
                       </div>
                     </div>

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -14,13 +13,13 @@ const Index = () => {
       <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <img 
                 src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
                 alt="Connected Partners & Business Logo" 
-                className="h-20 w-20 object-contain drop-shadow-lg filter brightness-110 contrast-125"
+                className="h-28 w-28 object-contain drop-shadow-lg filter brightness-110 contrast-125"
               />
-              <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl font-bold text-gray-900 leading-tight">
                 Connected Partners & Business
               </h1>
             </div>
@@ -52,7 +51,7 @@ const Index = () => {
             <img 
               src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
               alt="Connected Partners & Business Logo" 
-              className="h-32 w-32 object-contain drop-shadow-2xl filter brightness-110 contrast-125"
+              className="h-40 w-40 object-contain drop-shadow-2xl filter brightness-110 contrast-125"
             />
           </div>
           <h2 className="text-5xl font-extrabold text-gray-900 mb-6">

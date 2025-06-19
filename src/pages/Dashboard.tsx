@@ -61,6 +61,12 @@ const Dashboard = () => {
                   </Button>
                 </Link>
               )}
+              <Link to="/business/companies">
+                <Button variant="outline" size="sm">
+                  <Users className="h-4 w-4 mr-2" />
+                  Buscar Empresas
+                </Button>
+              </Link>
               <span className="text-sm text-gray-600">
                 {user ? user.nomeEmpresa : 'Administrador'}
               </span>
@@ -149,7 +155,7 @@ const Dashboard = () => {
           </TabsList>
 
           <TabsContent value="partners" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Card className="gradient-card hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <CardTitle className="flex items-center text-primary">
@@ -183,6 +189,25 @@ const Dashboard = () => {
                   <Link to="/partners/chat">
                     <Button className="w-full" variant="outline">
                       Acessar Conversas
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card className="gradient-card hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-primary">
+                    <Building2 className="h-5 w-5 mr-2" />
+                    Buscar Empresas
+                  </CardTitle>
+                  <CardDescription>
+                    Explore todas as empresas cadastradas na plataforma
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Link to="/business/companies">
+                    <Button className="w-full" variant="outline">
+                      Explorar Empresas
                     </Button>
                   </Link>
                 </CardContent>

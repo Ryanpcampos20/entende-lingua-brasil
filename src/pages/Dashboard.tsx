@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -186,9 +185,9 @@ const Dashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Link to="/partners/chat">
+                  <Link to="/partners">
                     <Button className="w-full" variant="outline">
-                      Acessar Conversas
+                      Ver Empresas para Chat
                     </Button>
                   </Link>
                 </CardContent>

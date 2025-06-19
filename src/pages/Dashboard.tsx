@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Handshake, ShoppingBag, Settings, LogOut, MessageCircle, TrendingUp } from "lucide-react";
+import { Users, Handshake, ShoppingBag, Settings, LogOut, MessageCircle, TrendingUp, Building2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Dashboard = () => {

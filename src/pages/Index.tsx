@@ -2,22 +2,25 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Briefcase, ChartBar, Users, Handshake, MessageCircle, ShoppingBag } from "lucide-react";
+import { Briefcase, ChartBar, Users, Handshake, MessageCircle, ShoppingBag, Calendar, User } from "lucide-react";
 
 const Index = () => {
+  // Simulando posts do blog do localStorage
+  const blogPosts = JSON.parse(localStorage.getItem("blogPosts") || "[]").slice(0, 3);
+
   return (
     <div className="min-h-screen gradient-bg">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <img 
                 src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
                 alt="Connected Partners & Business Logo" 
-                className="h-16 w-16 object-contain drop-shadow-md"
+                className="h-20 w-20 object-contain drop-shadow-lg filter brightness-110 contrast-125"
               />
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900 leading-tight">
                 Connected Partners & Business
               </h1>
             </div>
@@ -45,6 +48,13 @@ const Index = () => {
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
+              alt="Connected Partners & Business Logo" 
+              className="h-32 w-32 object-contain drop-shadow-2xl filter brightness-110 contrast-125"
+            />
+          </div>
           <h2 className="text-5xl font-extrabold text-gray-900 mb-6">
             Conecte sua empresa às melhores
             <span className="text-primary"> parcerias empresariais</span>
@@ -138,6 +148,47 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Blog Section */}
+      {blogPosts.length > 0 && (
+        <section className="py-16 bg-white/80 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                Blog - Educação Empresarial
+              </h3>
+              <p className="text-xl text-gray-600">
+                Conteúdos exclusivos para ajudar sua empresa a crescer e formar parcerias estratégicas
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+              {blogPosts.map((post: any) => (
+                <Card key={post.id} className="gradient-card border-blue-100 hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center text-sm text-gray-500 mb-2">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {new Date(post.createdAt).toLocaleDateString()}
+                      <User className="h-4 w-4 ml-4 mr-1" />
+                      {post.author}
+                    </div>
+                    <CardTitle className="text-primary line-clamp-2">{post.title}</CardTitle>
+                    <CardDescription className="line-clamp-3">
+                      {post.excerpt}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+            <div className="text-center">
+              <Link to="/blog">
+                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                  Ver Todos os Posts
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Modules Section */}
       <section className="py-16 bg-primary/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -204,13 +255,13 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center space-x-3">
+          <div className="flex items-center justify-center space-x-4">
             <img 
               src="/lovable-uploads/6e4f1017-6bad-4cc1-a450-27f5919b2498.png" 
               alt="Connected Partners & Business Logo" 
-              className="h-12 w-12 object-contain filter brightness-110 contrast-125"
+              className="h-16 w-16 object-contain filter brightness-110 contrast-125"
             />
-            <span className="text-lg font-semibold">Connected Partners & Business</span>
+            <span className="text-xl font-semibold">Connected Partners & Business</span>
           </div>
           <p className="text-center text-gray-400 mt-4">
             Conectando empresas brasileiras para um futuro próspero através de parcerias estratégicas

@@ -56,7 +56,7 @@ const AdminLogin = () => {
           <div className="flex justify-between items-center py-6">
             <Link to="/" className="flex items-center space-x-3">
               <img 
-                src="/lovable-uploads/e8102e8e-a33f-4a70-84ed-a1efec461924.png" 
+                src="/lovable-uploads/bad5c8be-c34c-4862-b6b3-b7ad10c24b65.png" 
                 alt="Connected Partners & Business Logo" 
                 className="h-10 w-10 object-contain"
               />

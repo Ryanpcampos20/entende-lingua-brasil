@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -246,10 +245,12 @@ const MatchingPage = () => {
                   )}
                   
                   <div className="flex space-x-2 pt-2">
-                    <Button className="flex-1 gradient-primary text-white" size="sm">
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Iniciar Chat
-                    </Button>
+                    <Link to={`/chat?with=${match.empresa.id}`}>
+                      <Button className="flex-1 gradient-primary text-white" size="sm">
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Iniciar Chat
+                      </Button>
+                    </Link>
                     <Button variant="outline" size="sm">
                       Ver Perfil
                     </Button>

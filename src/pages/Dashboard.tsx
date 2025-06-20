@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,11 +9,50 @@ import { useAuth } from "@/contexts/AuthContext";
 const Dashboard = () => {
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    matches: 0,
+    conversas: 0,
+    produtos: 0,
+    cotacoes: 0
+  });
   
   const handleLogout = () => {
     logout();
     navigate("/");
   };
+
+  // Calcular estatísticas dinâmicas baseadas no usuário logado
+  useEffect(() => {
+    if (user) {
+      // Calcular matches
+      const empresas = JSON.parse(localStorage.getItem("empresas") || "[]");
+      const matchesAtivos = empresas.filter((emp: any) => 
+        emp.id !== user.id && 
+        (emp.areaAtuacao === user.parceriasDesejadas || emp.parceriasDesejadas === user.areaAtuacao)
+      ).length;
+
+      // Calcular conversas
+      const chatKeys = Object.keys(localStorage).filter(key => key.startsWith('chat-'));
+      const conversasAtivas = chatKeys.filter(key => {
+        const messages = JSON.parse(localStorage.getItem(key) || "[]");
+        return messages.some((msg: any) => msg.senderId === user.id || msg.receiverId === user.id);
+      }).length;
+
+      // Calcular produtos
+      const produtos = JSON.parse(localStorage.getItem(`produtos-${user.id}`) || "[]");
+      
+      // Calcular cotações
+      const cotacoes = JSON.parse(localStorage.getItem("cotacoes") || "[]");
+      const minhasCotacoes = cotacoes.filter((cot: any) => cot.solicitante.id === user.id).length;
+
+      setStats({
+        matches: matchesAtivos,
+        conversas: conversasAtivas,
+        produtos: produtos.length,
+        cotacoes: minhasCotacoes
+      });
+    }
+  }, [user]);
 
   if (!user && !isAdmin) {
     return (
@@ -97,7 +136,7 @@ const Dashboard = () => {
                 <Handshake className="h-8 w-8 text-primary" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Matches Ativos</p>
-                  <p className="text-2xl font-bold text-primary">12</p>
+                  <p className="text-2xl font-bold text-primary">{stats.matches}</p>
                 </div>
               </div>
             </CardContent>
@@ -109,7 +148,7 @@ const Dashboard = () => {
                 <MessageCircle className="h-8 w-8 text-accent" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Conversas</p>
-                  <p className="text-2xl font-bold text-accent">5</p>
+                  <p className="text-2xl font-bold text-accent">{stats.conversas}</p>
                 </div>
               </div>
             </CardContent>
@@ -121,7 +160,7 @@ const Dashboard = () => {
                 <ShoppingBag className="h-8 w-8 text-secondary" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Produtos</p>
-                  <p className="text-2xl font-bold text-secondary">8</p>
+                  <p className="text-2xl font-bold text-secondary">{stats.produtos}</p>
                 </div>
               </div>
             </CardContent>
@@ -133,7 +172,7 @@ const Dashboard = () => {
                 <TrendingUp className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Cotações</p>
-                  <p className="text-2xl font-bold text-green-600">3</p>
+                  <p className="text-2xl font-bold text-green-600">{stats.cotacoes}</p>
                 </div>
               </div>
             </CardContent>

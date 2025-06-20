@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 import Blog from "./pages/Blog";
 import { CompaniesSearch } from "./pages/business/CompaniesSearch";
+import { QuotesPage } from "./pages/business/QuotesPage";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/business/products" element={<ProductsPage />} />
             <Route path="/business/companies" element={<CompaniesSearch />} />
+            <Route path="/business/quotes" element={<QuotesPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin" element={<AdminLogin />} />

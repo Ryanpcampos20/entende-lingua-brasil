@@ -9,13 +9,288 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      companies: {
+        Row: {
+          area_atuacao: string
+          cnpj: string
+          data_cadastro: string | null
+          descricao: string | null
+          email: string
+          id: string
+          nome_empresa: string
+          nome_responsavel: string
+          parcerias_desejadas: string
+          regiao: string
+          telefone: string | null
+          tipo_estabelecimento: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          area_atuacao: string
+          cnpj: string
+          data_cadastro?: string | null
+          descricao?: string | null
+          email: string
+          id?: string
+          nome_empresa: string
+          nome_responsavel: string
+          parcerias_desejadas: string
+          regiao: string
+          telefone?: string | null
+          tipo_estabelecimento: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          area_atuacao?: string
+          cnpj?: string
+          data_cadastro?: string | null
+          descricao?: string | null
+          email?: string
+          id?: string
+          nome_empresa?: string
+          nome_responsavel?: string
+          parcerias_desejadas?: string
+          regiao?: string
+          telefone?: string | null
+          tipo_estabelecimento?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          created_at: string | null
+          id: string
+          motivo: string | null
+          score: number
+          status: string | null
+          user1_id: string
+          user2_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          motivo?: string | null
+          score: number
+          status?: string | null
+          user1_id: string
+          user2_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          motivo?: string | null
+          score?: number
+          status?: string | null
+          user1_id?: string
+          user2_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          read_at: string | null
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          read_at?: string | null
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          read_at?: string | null
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          categoria: string | null
+          created_at: string | null
+          descricao: string | null
+          disponivel: boolean | null
+          id: string
+          nome: string
+          preco: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          disponivel?: boolean | null
+          id?: string
+          nome: string
+          preco?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          disponivel?: boolean | null
+          id?: string
+          nome?: string
+          preco?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          area_atuacao: string
+          cnpj: string
+          data_cadastro: string | null
+          descricao: string | null
+          email: string
+          id: string
+          nome_empresa: string
+          nome_responsavel: string
+          parcerias_desejadas: string
+          regiao: string
+          telefone: string | null
+          tipo_estabelecimento: string
+          updated_at: string | null
+        }
+        Insert: {
+          area_atuacao: string
+          cnpj: string
+          data_cadastro?: string | null
+          descricao?: string | null
+          email: string
+          id: string
+          nome_empresa: string
+          nome_responsavel: string
+          parcerias_desejadas: string
+          regiao: string
+          telefone?: string | null
+          tipo_estabelecimento: string
+          updated_at?: string | null
+        }
+        Update: {
+          area_atuacao?: string
+          cnpj?: string
+          data_cadastro?: string | null
+          descricao?: string | null
+          email?: string
+          id?: string
+          nome_empresa?: string
+          nome_responsavel?: string
+          parcerias_desejadas?: string
+          regiao?: string
+          telefone?: string | null
+          tipo_estabelecimento?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      quote_responses: {
+        Row: {
+          created_at: string | null
+          fornecedor_id: string
+          id: string
+          prazo_entrega: string | null
+          proposta: string
+          quote_id: string
+          valor: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fornecedor_id: string
+          id?: string
+          prazo_entrega?: string | null
+          proposta: string
+          quote_id: string
+          valor?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fornecedor_id?: string
+          id?: string
+          prazo_entrega?: string | null
+          proposta?: string
+          quote_id?: string
+          valor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_responses_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          created_at: string | null
+          descricao: string
+          id: string
+          orcamento: string | null
+          prazo: string | null
+          setor: string
+          solicitante_id: string
+          status: string | null
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          descricao: string
+          id?: string
+          orcamento?: string | null
+          prazo?: string | null
+          setor: string
+          solicitante_id: string
+          status?: string | null
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          descricao?: string
+          id?: string
+          orcamento?: string | null
+          prazo?: string | null
+          setor?: string
+          solicitante_id?: string
+          status?: string | null
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_matches: {
+        Args: { user_id: string }
+        Returns: {
+          match_user_id: string
+          score: number
+          motivo: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

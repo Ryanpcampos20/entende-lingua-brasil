@@ -5,9 +5,12 @@ import { CompanyBasicInfo } from "./CompanyBasicInfo";
 import { CompanyDetails } from "./CompanyDetails";
 import { CompanyDescription } from "./CompanyDescription";
 import { validatePassword } from "@/utils/passwordValidation";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface RegisterFormProps {
-  onSubmit: (formData: any) => void;
+  onSubmit?: (formData: any) => void;
 }
 
 export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
@@ -26,8 +29,12 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
   });
 
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { signUp } = useSupabaseAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validar senha
@@ -39,17 +46,65 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
 
     // Validar se há pelo menos uma área de atuação e parceria desejada
     if (formData.areaAtuacao.length === 0) {
-      alert("Adicione pelo menos uma área de atuação");
+      toast({
+        title: "Erro no cadastro",
+        description: "Adicione pelo menos uma área de atuação",
+        variant: "destructive"
+      });
       return;
     }
 
     if (formData.parceriasDesejadas.length === 0) {
-      alert("Adicione pelo menos um setor de parceria desejada");
+      toast({
+        title: "Erro no cadastro", 
+        description: "Adicione pelo menos um setor de parceria desejada",
+        variant: "destructive"
+      });
       return;
     }
 
     setPasswordErrors([]);
-    onSubmit(formData);
+    setLoading(true);
+
+    // Preparar dados para o Supabase
+    const userData = {
+      nome_empresa: formData.nomeEmpresa,
+      cnpj: formData.cnpj,
+      nome_responsavel: formData.nomeResponsavel,
+      telefone: formData.telefone,
+      area_atuacao: formData.areaAtuacao.join(', '),
+      tipo_estabelecimento: formData.tipoEstabelecimento,
+      regiao: formData.regiao,
+      descricao: formData.descricao,
+      parcerias_desejadas: formData.parceriasDesejadas.join(', ')
+    };
+
+    const { error } = await signUp(formData.email, formData.senha, userData);
+
+    if (error) {
+      toast({
+        title: "Erro no cadastro",
+        description: error.message || "Erro ao criar conta",
+        variant: "destructive"
+      });
+      setLoading(false);
+      return;
+    }
+
+    toast({
+      title: "Conta criada com sucesso!",
+      description: "Verifique seu e-mail para confirmar a conta e depois faça login."
+    });
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 2000);
+
+    if (onSubmit) {
+      onSubmit(formData);
+    }
+    
+    setLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -98,8 +153,8 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
         onArrayChange={handleArrayChange}
       />
 
-      <Button type="submit" className="w-full" size="lg">
-        Cadastrar Empresa
+      <Button type="submit" className="w-full" size="lg" disabled={loading}>
+        {loading ? "Cadastrando..." : "Cadastrar Empresa"}
       </Button>
     </form>
   );

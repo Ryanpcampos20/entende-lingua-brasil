@@ -4,33 +4,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { loginWithCredentials } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useSupabaseAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    if (loginWithCredentials(email, senha)) {
+    const { error } = await signIn(email, senha);
+    
+    if (error) {
+      toast({
+        title: "Erro no login",
+        description: error.message || "E-mail ou senha incorretos",
+        variant: "destructive"
+      });
+    } else {
       toast({
         title: "Login realizado com sucesso!",
         description: "Redirecionando para o dashboard..."
       });
       navigate("/dashboard");
-    } else {
-      toast({
-        title: "Erro no login",
-        description: "E-mail ou senha incorretos",
-        variant: "destructive"
-      });
     }
+    
+    setLoading(false);
   };
 
   return (
@@ -52,6 +58,7 @@ export const LoginForm = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="seu@email.com"
+              disabled={loading}
             />
           </div>
           <div>
@@ -63,10 +70,11 @@ export const LoginForm = () => {
               onChange={(e) => setSenha(e.target.value)}
               required
               placeholder="Sua senha"
+              disabled={loading}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Entrar
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Entrando..." : "Entrar"}
           </Button>
           <div className="text-center text-sm">
             <span className="text-gray-600">Não tem conta? </span>

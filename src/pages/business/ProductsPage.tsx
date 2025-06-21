@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useProducts } from "@/hooks/useProducts";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Package, Plus } from "lucide-react";
+import { ArrowLeft, Package, Plus, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const ProductsPage = () => {
   const { user } = useSupabaseAuth();
@@ -19,6 +20,7 @@ export const ProductsPage = () => {
     preco: "",
     categoria: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -29,9 +31,11 @@ export const ProductsPage = () => {
   };
 
   const handleAdicionarProduto = async () => {
-    if (!novoProduto.nome.trim() || !novoProduto.categoria.trim()) {
+    if (!novoProduto.nome.trim()) {
       return;
     }
+
+    setIsSubmitting(true);
 
     const success = await addProduct({
       nome: novoProduto.nome.trim(),
@@ -49,6 +53,8 @@ export const ProductsPage = () => {
         categoria: ""
       });
     }
+
+    setIsSubmitting(false);
   };
 
   const handleRemoverProduto = async (id: string) => {
@@ -102,30 +108,34 @@ export const ProductsPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="nome">Nome do Produto *</Label>
-                <Input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={novoProduto.nome}
-                  onChange={handleInputChange}
-                  placeholder="Nome do produto"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="nome">Nome do Produto *</Label>
+                  <Input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    value={novoProduto.nome}
+                    onChange={handleInputChange}
+                    placeholder="Nome do produto"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="categoria">Categoria</Label>
+                  <Input
+                    type="text"
+                    id="categoria"
+                    name="categoria"
+                    value={novoProduto.categoria}
+                    onChange={handleInputChange}
+                    placeholder="Categoria do produto"
+                    disabled={isSubmitting}
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="categoria">Categoria *</Label>
-                <Input
-                  type="text"
-                  id="categoria"
-                  name="categoria"
-                  value={novoProduto.categoria}
-                  onChange={handleInputChange}
-                  placeholder="Categoria do produto"
-                  required
-                />
-              </div>
+              
               <div>
                 <Label htmlFor="descricao">Descrição</Label>
                 <Textarea
@@ -135,8 +145,10 @@ export const ProductsPage = () => {
                   onChange={handleInputChange}
                   placeholder="Descrição do produto"
                   rows={3}
+                  disabled={isSubmitting}
                 />
               </div>
+              
               <div>
                 <Label htmlFor="preco">Preço (R$)</Label>
                 <Input
@@ -148,10 +160,25 @@ export const ProductsPage = () => {
                   placeholder="0.00"
                   min="0"
                   step="0.01"
+                  disabled={isSubmitting}
                 />
               </div>
-              <Button onClick={handleAdicionarProduto} className="w-full gradient-primary text-white">
-                Adicionar Produto
+              
+              {!novoProduto.nome.trim() && (
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    O nome do produto é obrigatório.
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              <Button 
+                onClick={handleAdicionarProduto} 
+                className="w-full gradient-primary text-white"
+                disabled={!novoProduto.nome.trim() || isSubmitting}
+              >
+                {isSubmitting ? "Adicionando..." : "Adicionar Produto"}
               </Button>
             </CardContent>
           </Card>

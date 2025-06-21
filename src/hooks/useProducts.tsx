@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSupabaseAuth } from './useSupabaseAuth';
 import { useToast } from '@/hooks/use-toast';
+import { sanitizeAndValidateText } from '@/utils/inputSanitization';
 
 interface Product {
   id: string;
@@ -12,6 +13,7 @@ interface Product {
   categoria?: string;
   disponivel: boolean;
   created_at: string;
+  user_id: string;
 }
 
 export const useProducts = () => {
@@ -34,6 +36,7 @@ export const useProducts = () => {
       if (error) throw error;
       setProducts(data || []);
     } catch (error: any) {
+      console.error('Error fetching products:', error);
       toast({
         title: "Erro ao carregar produtos",
         description: error.message,
@@ -44,16 +47,53 @@ export const useProducts = () => {
     }
   };
 
-  const addProduct = async (productData: Omit<Product, 'id' | 'created_at'>) => {
-    if (!user) return false;
+  const addProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'user_id'>) => {
+    if (!user) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Você precisa estar logado para adicionar produtos",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    // Validar e sanitizar dados
+    const nomeValidation = sanitizeAndValidateText(productData.nome, 100);
+    if (!nomeValidation.isValid) {
+      toast({
+        title: "Erro de validação",
+        description: nomeValidation.error || "Nome do produto inválido",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    const descricaoValidation = productData.descricao 
+      ? sanitizeAndValidateText(productData.descricao, 500)
+      : { isValid: true, sanitized: '' };
+    
+    if (!descricaoValidation.isValid) {
+      toast({
+        title: "Erro de validação",
+        description: descricaoValidation.error || "Descrição inválida",
+        variant: "destructive"
+      });
+      return false;
+    }
 
     try {
+      const sanitizedData = {
+        nome: nomeValidation.sanitized,
+        descricao: descricaoValidation.sanitized || null,
+        preco: productData.preco || null,
+        categoria: productData.categoria || null,
+        disponivel: true,
+        user_id: user.id
+      };
+
       const { error } = await supabase
         .from('products')
-        .insert([{
-          ...productData,
-          user_id: user.id
-        }]);
+        .insert([sanitizedData]);
 
       if (error) throw error;
       
@@ -64,6 +104,7 @@ export const useProducts = () => {
       fetchProducts();
       return true;
     } catch (error: any) {
+      console.error('Error adding product:', error);
       toast({
         title: "Erro ao adicionar produto",
         description: error.message,
@@ -73,7 +114,7 @@ export const useProducts = () => {
     }
   };
 
-  const updateProduct = async (id: string, updates: Partial<Product>) => {
+  const updateProduct = async (id: string, updates: Partial<Omit<Product, 'id' | 'created_at' | 'user_id'>>) => {
     if (!user) return false;
 
     try {
@@ -92,6 +133,7 @@ export const useProducts = () => {
       fetchProducts();
       return true;
     } catch (error: any) {
+      console.error('Error updating product:', error);
       toast({
         title: "Erro ao atualizar produto",
         description: error.message,
@@ -120,6 +162,7 @@ export const useProducts = () => {
       fetchProducts();
       return true;
     } catch (error: any) {
+      console.error('Error deleting product:', error);
       toast({
         title: "Erro ao remover produto",
         description: error.message,

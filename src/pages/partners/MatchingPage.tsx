@@ -1,11 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, MapPin, Building, MessageCircle, Star } from "lucide-react";
+import { ArrowLeft, Users, MapPin, Building, MessageCircle, Star, HandHeart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { ProfileModal } from "@/components/profile/ProfileModal";
+import { IntermediaryRequestModal } from "@/components/partners/IntermediaryRequestModal";
 
 interface Empresa {
   id: number;
@@ -17,6 +18,9 @@ interface Empresa {
   descricao: string;
   parceriasDesejadas: string;
   dataCadastro: string;
+  nomeResponsavel?: string;
+  email?: string;
+  telefone?: string;
 }
 
 interface Match {
@@ -30,6 +34,10 @@ const MatchingPage = () => {
   const navigate = useNavigate();
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProfile, setSelectedProfile] = useState<any>(null);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [intermediaryModalOpen, setIntermediaryModalOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<{ name: string; id: string } | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -107,6 +115,34 @@ const MatchingPage = () => {
     if (score >= 60) return "Bom";
     if (score >= 40) return "Moderado";
     return "Baixo";
+  };
+
+  const handleViewProfile = (empresa: Empresa) => {
+    const profileData = {
+      id: empresa.id.toString(),
+      nome_empresa: empresa.nomeEmpresa,
+      cnpj: empresa.cnpj,
+      nome_responsavel: empresa.nomeResponsavel || "Não informado",
+      email: empresa.email || "Não informado",
+      telefone: empresa.telefone,
+      area_atuacao: empresa.areaAtuacao,
+      tipo_estabelecimento: empresa.tipoEstabelecimento,
+      regiao: empresa.regiao,
+      descricao: empresa.descricao,
+      parcerias_desejadas: empresa.parceriasDesejadas,
+      data_cadastro: empresa.dataCadastro
+    };
+    
+    setSelectedProfile(profileData);
+    setProfileModalOpen(true);
+  };
+
+  const handleRequestIntermediary = (empresa: Empresa) => {
+    setSelectedCompany({
+      name: empresa.nomeEmpresa,
+      id: empresa.id.toString()
+    });
+    setIntermediaryModalOpen(true);
   };
 
   if (loading) {
@@ -245,15 +281,32 @@ const MatchingPage = () => {
                     </p>
                   )}
                   
-                  <div className="flex space-x-2 pt-2">
-                    <Link to={`/chat?with=${match.empresa.id}`}>
-                      <Button className="flex-1 gradient-primary text-white" size="sm">
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        Iniciar Chat
+                  <div className="flex flex-col space-y-2 pt-2">
+                    <div className="flex space-x-2">
+                      <Link to={`/chat?with=${match.empresa.id}`} className="flex-1">
+                        <Button className="w-full gradient-primary text-white" size="sm">
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Iniciar Chat
+                        </Button>
+                      </Link>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleViewProfile(match.empresa)}
+                        className="flex-1"
+                      >
+                        Ver Perfil
                       </Button>
-                    </Link>
-                    <Button variant="outline" size="sm">
-                      Ver Perfil
+                    </div>
+                    
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => handleRequestIntermediary(match.empresa)}
+                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700"
+                    >
+                      <HandHeart className="h-4 w-4 mr-2" />
+                      Solicitar Intermediador
                     </Button>
                   </div>
                 </CardContent>
@@ -262,6 +315,26 @@ const MatchingPage = () => {
           )}
         </div>
       </div>
+
+      {/* Modals */}
+      <ProfileModal
+        profile={selectedProfile}
+        isOpen={profileModalOpen}
+        onClose={() => {
+          setProfileModalOpen(false);
+          setSelectedProfile(null);
+        }}
+      />
+
+      <IntermediaryRequestModal
+        isOpen={intermediaryModalOpen}
+        onClose={() => {
+          setIntermediaryModalOpen(false);
+          setSelectedCompany(null);
+        }}
+        companyName={selectedCompany?.name || ""}
+        companyId={selectedCompany?.id || ""}
+      />
     </div>
   );
 };

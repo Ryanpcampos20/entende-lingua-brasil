@@ -11,7 +11,7 @@ interface Quote {
   setor: string;
   orcamento?: string;
   prazo?: string;
-  status: 'aberta' | 'em_analise' | 'fechada';
+  status: string | null;
   created_at: string;
   solicitante_id: string;
 }

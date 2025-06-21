@@ -284,7 +284,7 @@ export type Database = {
     }
     Functions: {
       calculate_matches: {
-        Args: { user_id: string }
+        Args: Record<PropertyKey, never> | { user_id: string }
         Returns: {
           match_user_id: string
           score: number

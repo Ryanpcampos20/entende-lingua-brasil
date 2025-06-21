@@ -165,6 +165,7 @@ export type Database = {
           nome_responsavel: string
           parcerias_desejadas: string
           regiao: string
+          role: string | null
           telefone: string | null
           tipo_estabelecimento: string
           updated_at: string | null
@@ -180,6 +181,7 @@ export type Database = {
           nome_responsavel: string
           parcerias_desejadas: string
           regiao: string
+          role?: string | null
           telefone?: string | null
           tipo_estabelecimento: string
           updated_at?: string | null
@@ -195,6 +197,7 @@ export type Database = {
           nome_responsavel?: string
           parcerias_desejadas?: string
           regiao?: string
+          role?: string | null
           telefone?: string | null
           tipo_estabelecimento?: string
           updated_at?: string | null
@@ -290,6 +293,10 @@ export type Database = {
           score: number
           motivo: string
         }[]
+      }
+      is_admin: {
+        Args: { user_id?: string }
+        Returns: boolean
       }
     }
     Enums: {

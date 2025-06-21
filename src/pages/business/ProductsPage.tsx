@@ -1,40 +1,24 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import { v4 as uuidv4 } from 'uuid';
-
-interface Produto {
-  id: string;
-  nome: string;
-  descricao: string;
-  preco: string;
-  categoria: string;
-}
+import { useProducts } from "@/hooks/useProducts";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Package, Plus } from "lucide-react";
 
 export const ProductsPage = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const { user } = useSupabaseAuth();
+  const { products, loading, addProduct, deleteProduct } = useProducts();
   const [novoProduto, setNovoProduto] = useState({
     nome: "",
     descricao: "",
     preco: "",
     categoria: ""
   });
-
-  useEffect(() => {
-    // Carregar produtos do localStorage ao montar o componente
-    const produtosSalvos = localStorage.getItem(`produtos-${user?.id}`);
-    if (produtosSalvos) {
-      setProdutos(JSON.parse(produtosSalvos));
-    }
-  }, [user?.id]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -44,131 +28,195 @@ export const ProductsPage = () => {
     }));
   };
 
-  const handleAdicionarProduto = () => {
-    if (!novoProduto.nome || !novoProduto.descricao || !novoProduto.preco || !novoProduto.categoria) {
-      toast({
-        title: "Erro",
-        description: "Por favor, preencha todos os campos.",
-        variant: "destructive"
-      });
+  const handleAdicionarProduto = async () => {
+    if (!novoProduto.nome.trim() || !novoProduto.categoria.trim()) {
       return;
     }
 
-    const novoProdutoComId: Produto = {
-      ...novoProduto,
-      id: uuidv4()
-    };
-
-    const produtosAtualizados = [...produtos, novoProdutoComId];
-    setProdutos(produtosAtualizados);
-    localStorage.setItem(`produtos-${user?.id}`, JSON.stringify(produtosAtualizados));
-
-    setNovoProduto({
-      nome: "",
-      descricao: "",
-      preco: "",
-      categoria: ""
+    const success = await addProduct({
+      nome: novoProduto.nome.trim(),
+      descricao: novoProduto.descricao.trim() || undefined,
+      preco: novoProduto.preco ? parseFloat(novoProduto.preco) : undefined,
+      categoria: novoProduto.categoria.trim() || undefined,
+      disponivel: true
     });
 
-    toast({
-      title: "Produto adicionado",
-      description: "O produto foi adicionado com sucesso."
-    });
+    if (success) {
+      setNovoProduto({
+        nome: "",
+        descricao: "",
+        preco: "",
+        categoria: ""
+      });
+    }
   };
 
-  const handleRemoverProduto = (id: string) => {
-    const produtosAtualizados = produtos.filter(produto => produto.id !== id);
-    setProdutos(produtosAtualizados);
-    
-    localStorage.setItem(`produtos-${user?.id}`, JSON.stringify(produtosAtualizados));
-    
-    toast({
-      title: "Produto removido",
-      description: "O produto foi removido com sucesso."
-    });
+  const handleRemoverProduto = async (id: string) => {
+    await deleteProduct(id);
   };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen gradient-bg flex items-center justify-center">
+        <Card>
+          <CardContent className="text-center py-8">
+            <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">Você precisa estar logado para gerenciar produtos.</p>
+            <Link to="/login">
+              <Button className="mt-4">Fazer Login</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>Produtos da Empresa</CardTitle>
-          <CardDescription>
-            Gerencie os produtos da sua empresa aqui.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div>
-              <Label htmlFor="nome">Nome do Produto</Label>
-              <Input
-                type="text"
-                id="nome"
-                name="nome"
-                value={novoProduto.nome}
-                onChange={handleInputChange}
-                placeholder="Nome do produto"
-              />
-            </div>
-            <div>
-              <Label htmlFor="descricao">Descrição</Label>
-              <Textarea
-                id="descricao"
-                name="descricao"
-                value={novoProduto.descricao}
-                onChange={handleInputChange}
-                placeholder="Descrição do produto"
-              />
-            </div>
-            <div>
-              <Label htmlFor="preco">Preço</Label>
-              <Input
-                type="number"
-                id="preco"
-                name="preco"
-                value={novoProduto.preco}
-                onChange={handleInputChange}
-                placeholder="Preço do produto"
-              />
-            </div>
-            <div>
-              <Label htmlFor="categoria">Categoria</Label>
-              <Input
-                type="text"
-                id="categoria"
-                name="categoria"
-                value={novoProduto.categoria}
-                onChange={handleInputChange}
-                placeholder="Categoria do produto"
-              />
-            </div>
-            <Button onClick={handleAdicionarProduto}>Adicionar Produto</Button>
-          </div>
+    <div className="min-h-screen gradient-bg">
+      <div className="container mx-auto py-8 px-4">
+        <div className="mb-6">
+          <Link to="/dashboard">
+            <Button variant="outline" className="mb-4">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar ao Dashboard
+            </Button>
+          </Link>
 
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-4">Lista de Produtos</h3>
-            {produtos.length === 0 ? (
-              <p>Nenhum produto cadastrado.</p>
-            ) : (
-              <div className="grid gap-4">
-                {produtos.map(produto => (
-                  <Card key={produto.id}>
-                    <CardHeader>
-                      <CardTitle>{produto.nome}</CardTitle>
-                      <CardDescription>{produto.categoria}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p>Descrição: {produto.descricao}</p>
-                      <p>Preço: {produto.preco}</p>
-                      <Button variant="destructive" onClick={() => handleRemoverProduto(produto.id)}>Remover</Button>
-                    </CardContent>
-                  </Card>
-                ))}
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Produtos da Empresa
+          </h1>
+          <p className="text-gray-600">
+            Gerencie os produtos da sua empresa aqui.
+          </p>
+        </div>
+
+        <div className="grid gap-6">
+          <Card className="gradient-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Plus className="h-5 w-5" />
+                Adicionar Novo Produto
+              </CardTitle>
+              <CardDescription>
+                Cadastre um novo produto ou serviço da sua empresa
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="nome">Nome do Produto *</Label>
+                <Input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  value={novoProduto.nome}
+                  onChange={handleInputChange}
+                  placeholder="Nome do produto"
+                  required
+                />
               </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              <div>
+                <Label htmlFor="categoria">Categoria *</Label>
+                <Input
+                  type="text"
+                  id="categoria"
+                  name="categoria"
+                  value={novoProduto.categoria}
+                  onChange={handleInputChange}
+                  placeholder="Categoria do produto"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="descricao">Descrição</Label>
+                <Textarea
+                  id="descricao"
+                  name="descricao"
+                  value={novoProduto.descricao}
+                  onChange={handleInputChange}
+                  placeholder="Descrição do produto"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="preco">Preço (R$)</Label>
+                <Input
+                  type="number"
+                  id="preco"
+                  name="preco"
+                  value={novoProduto.preco}
+                  onChange={handleInputChange}
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+              <Button onClick={handleAdicionarProduto} className="w-full gradient-primary text-white">
+                Adicionar Produto
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="gradient-card">
+            <CardHeader>
+              <CardTitle>Lista de Produtos</CardTitle>
+              <CardDescription>
+                {products.length} produto(s) cadastrado(s)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="text-center py-4">
+                  <p>Carregando produtos...</p>
+                </div>
+              ) : products.length === 0 ? (
+                <div className="text-center py-8">
+                  <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">Nenhum produto cadastrado.</p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {products.map(produto => (
+                    <Card key={produto.id} className="border border-gray-200">
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg">{produto.nome}</CardTitle>
+                            <CardDescription>{produto.categoria}</CardDescription>
+                          </div>
+                          {produto.preco && (
+                            <div className="text-right">
+                              <span className="text-lg font-semibold text-green-600">
+                                R$ {produto.preco.toFixed(2)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        {produto.descricao && (
+                          <p className="text-gray-700 mb-4">{produto.descricao}</p>
+                        )}
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-500">
+                            Cadastrado em {new Date(produto.created_at).toLocaleDateString()}
+                          </span>
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            onClick={() => handleRemoverProduto(produto.id)}
+                          >
+                            Remover
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

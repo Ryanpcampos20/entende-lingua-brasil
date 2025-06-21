@@ -7,37 +7,51 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { loginAdmin } = useAuth();
+  const { signIn } = useSupabaseAuth();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: ""
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    // Credenciais fixas para demonstração
-    if (formData.username === "admin" && formData.password === "admin123") {
-      loginAdmin();
+    try {
+      const { error } = await signIn(formData.email, formData.password);
+      
+      if (error) {
+        toast({
+          title: "Erro no login",
+          description: error.message || "Credenciais inválidas",
+          variant: "destructive"
+        });
+        return;
+      }
+
       toast({
         title: "Login realizado com sucesso!",
-        description: "Redirecionando para o dashboard administrativo..."
+        description: "Verificando permissões administrativas..."
       });
       
+      // Navigation will be handled by the auth state change
       setTimeout(() => {
         navigate("/admin/dashboard");
       }, 1000);
-    } else {
+    } catch (error: any) {
       toast({
         title: "Erro no login",
-        description: "Usuário ou senha incorretos",
+        description: error.message || "Erro interno do servidor",
         variant: "destructive"
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,15 +98,16 @@ const AdminLogin = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="username">Usuário</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input 
-                    id="username"
-                    name="username"
-                    type="text"
-                    value={formData.username}
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="Digite seu usuário"
+                    placeholder="admin@example.com"
+                    disabled={loading}
                   />
                 </div>
                 
@@ -106,18 +121,23 @@ const AdminLogin = () => {
                     onChange={handleChange}
                     required
                     placeholder="Digite sua senha"
+                    disabled={loading}
+                    minLength={8}
                   />
                 </div>
 
-                <Button type="submit" className="w-full gradient-primary text-white" size="lg">
-                  Fazer Login
+                <Button 
+                  type="submit" 
+                  className="w-full gradient-primary text-white" 
+                  size="lg"
+                  disabled={loading}
+                >
+                  {loading ? "Fazendo Login..." : "Fazer Login"}
                 </Button>
               </form>
               
               <div className="mt-4 text-center text-sm text-gray-600">
-                <p>Credenciais para demonstração:</p>
-                <p>Usuário: <code className="bg-gray-100 px-1 rounded">admin</code></p>
-                <p>Senha: <code className="bg-gray-100 px-1 rounded">admin123</code></p>
+                <p>Somente usuários com permissão de administrador podem acessar esta área.</p>
               </div>
             </CardContent>
           </Card>

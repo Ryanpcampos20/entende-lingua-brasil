@@ -53,9 +53,7 @@ export const validateCNPJ = (cnpj: string): boolean => {
   if (/^(\d)\1+$/.test(cnpj)) return false;
   
   // Validate check digits
-  let length = cnp
-
-
+  let length = cnpj.length - 2;
   let pos = cnpj.length - 2;
   let numbers = cnpj.substring(0, pos);
   let digits = cnpj.substring(pos);

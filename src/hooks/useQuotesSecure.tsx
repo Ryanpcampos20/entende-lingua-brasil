@@ -14,10 +14,6 @@ interface Quote {
   status: string;
   created_at: string;
   solicitante_id: string;
-  solicitante?: {
-    nome_empresa: string;
-    nome_responsavel: string;
-  };
 }
 
 interface QuoteResponse {
@@ -28,10 +24,6 @@ interface QuoteResponse {
   valor?: string;
   prazo_entrega?: string;
   created_at: string;
-  fornecedor?: {
-    nome_empresa: string;
-    nome_responsavel: string;
-  };
 }
 
 export const useQuotesSecure = () => {
@@ -46,10 +38,7 @@ export const useQuotesSecure = () => {
     try {
       const { data, error } = await supabase
         .from('quotes')
-        .select(`
-          *,
-          solicitante:profiles!quotes_solicitante_id_fkey(nome_empresa, nome_responsavel)
-        `)
+        .select('*')
         .eq('status', 'aberta')
         .order('created_at', { ascending: false });
 
